@@ -1,40 +1,42 @@
-import {users} from "./UserData";
+import api from "./http";
 import type{User} from "../models/User";
 
 export class AuthService{
 
-    static login(name:string, email:string):User | null{
+    static async login(email:string):Promise<User | null>{
 
-        const user = users.find(u=> u.name===name && u.email===email);
+        try {
+            const response = await api.post<User>("/users/login", {
+            email
+            });
 
-        if (!user) {
+            const user = response.data;
+            localStorage.setItem("user", JSON.stringify(user));
+
+            return user;
+
+        } catch (error) {
+            console.log("Login error", error);
             return null;
         }
-
-        localStorage.setItem("session", JSON.stringify(user));
-
-
-        return user;
     }
 
-    static register(name:string, email:string):User{
-        const exist = users.find(u=> u.email===email);
+    static async register(name:string, email:string):Promise<User | null>{
+       try {
+            const response = await api.post("/users/register",{
+                name,
+                email
+            });
 
-        if (exist) {
-            console.error("Ese usuario ya existe");
+            const user = response.data;
+            localStorage.setItem("user", JSON.stringify(user));
+
+            return user;
+
+        } catch (error) {
+            console.error("register error", error);
+            return null;
         }
-
-        const newUser = {
-            id: users.length+1,
-            name,
-            email
-        }
-
-        users.push(newUser);
-        localStorage.setItem("session", JSON.stringify(newUser));
-
-        return newUser;
-
 
     }
 

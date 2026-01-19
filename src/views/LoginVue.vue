@@ -3,12 +3,12 @@ import { ref } from "vue";
 import { AuthService } from "@/services/AuthService";
 import { useRouter } from "vue-router";
 
-const name = ref("");
 const email = ref("");
 const router = useRouter();
 
-function handleLogin() {
-  const user = AuthService.login(name.value, email.value);
+async function handleLogin() {
+
+  const user = await AuthService.login(email.value);
 
   if (!user) {
     alert("Usuario incorrecto");
@@ -16,6 +16,7 @@ function handleLogin() {
   }
 
   alert("Bienvenido " + user.name);
+
 }
 </script>
 
@@ -23,9 +24,16 @@ function handleLogin() {
   <div>
     <h1>Login</h1>
 
-    <input v-model="name" placeholder="Nombre" />
-    <input v-model="email" placeholder="Email" />
+    <input
+      v-model="email"
+      type="email"
+      placeholder="Email"
+    />
 
-    <button @click="handleLogin">Login</button>
+    <button
+      @click="handleLogin"
+    >
+      Login
+    </button>
   </div>
 </template>
