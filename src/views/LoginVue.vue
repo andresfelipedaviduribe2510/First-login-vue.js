@@ -16,6 +16,7 @@ async function handleLogin() {
   }
 
   alert("Bienvenido " + user.name);
+  router.push("/home");
 
 }
 </script>
